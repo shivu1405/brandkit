@@ -1,0 +1,625 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Brand Kit Generator</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;500;600;700;800&family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;1,9..40,300&display=swap" rel="stylesheet">
+<style>
+:root {
+  --bg: #0a0a09;
+  --bg2: #111110;
+  --bg3: #1a1a18;
+  --border: rgba(255,255,255,0.08);
+  --border2: rgba(255,255,255,0.14);
+  --text: #f0efe8;
+  --muted: #888880;
+  --accent: #d4f04a;
+  --accent-dim: rgba(212,240,74,0.12);
+}
+*{box-sizing:border-box;margin:0;padding:0}
+html{scroll-behavior:smooth}
+body{background:var(--bg);color:var(--text);font-family:'DM Sans',sans-serif;font-size:15px;line-height:1.6;min-height:100vh;overflow-x:hidden}
+
+/* — Nav — */
+nav{position:fixed;top:0;left:0;right:0;z-index:100;padding:18px 32px;display:flex;justify-content:space-between;align-items:center;border-bottom:0.5px solid var(--border);background:rgba(10,10,9,0.85);backdrop-filter:blur(12px)}
+.nav-logo{font-family:'Syne',sans-serif;font-size:15px;font-weight:700;letter-spacing:0.06em;color:var(--text)}
+.nav-logo span{color:var(--accent)}
+.nav-badge{font-size:11px;padding:4px 12px;border-radius:100px;border:0.5px solid var(--border2);color:var(--muted)}
+
+/* — Hero — */
+.hero{min-height:100vh;display:flex;align-items:center;justify-content:center;flex-direction:column;text-align:center;padding:120px 32px 80px;position:relative}
+.hero::before{content:'';position:absolute;inset:0;background:radial-gradient(ellipse 60% 50% at 50% 0%,rgba(212,240,74,0.06) 0%,transparent 70%);pointer-events:none}
+.eyebrow{font-size:11px;font-weight:500;letter-spacing:0.12em;text-transform:uppercase;color:var(--accent);margin-bottom:20px;opacity:0;animation:fadeUp 0.6s 0.1s forwards}
+.hero h1{font-family:'Syne',sans-serif;font-size:clamp(42px,7vw,88px);font-weight:800;line-height:1.0;letter-spacing:-0.03em;margin-bottom:24px;opacity:0;animation:fadeUp 0.6s 0.2s forwards}
+.hero h1 em{font-style:normal;color:var(--accent)}
+.hero-sub{font-size:17px;color:var(--muted);max-width:480px;font-weight:300;margin-bottom:48px;opacity:0;animation:fadeUp 0.6s 0.3s forwards}
+.hero-cta{display:inline-flex;align-items:center;gap:10px;background:var(--accent);color:#0a0a09;font-family:'Syne',sans-serif;font-weight:700;font-size:14px;letter-spacing:0.04em;padding:14px 28px;border-radius:100px;text-decoration:none;cursor:pointer;border:none;transition:transform 0.2s,box-shadow 0.2s;opacity:0;animation:fadeUp 0.6s 0.4s forwards}
+.hero-cta:hover{transform:translateY(-2px);box-shadow:0 8px 32px rgba(212,240,74,0.25)}
+.hero-cta svg{width:16px;height:16px}
+
+/* — Section — */
+section{max-width:760px;margin:0 auto;padding:80px 32px}
+.section-label{font-size:11px;font-weight:500;letter-spacing:0.12em;text-transform:uppercase;color:var(--accent);margin-bottom:12px}
+.section-title{font-family:'Syne',sans-serif;font-size:clamp(24px,4vw,36px);font-weight:700;letter-spacing:-0.02em;margin-bottom:8px}
+.section-sub{color:var(--muted);font-size:15px;font-weight:300;margin-bottom:40px}
+
+/* — Form — */
+.form-card{background:var(--bg2);border:0.5px solid var(--border);border-radius:20px;padding:40px;margin-bottom:16px}
+.form-grid{display:grid;grid-template-columns:1fr 1fr;gap:20px}
+.form-group{display:flex;flex-direction:column;gap:8px}
+.form-group.full{grid-column:1/-1}
+.form-group label{font-size:12px;font-weight:500;letter-spacing:0.04em;color:var(--muted);text-transform:uppercase}
+.form-group input,.form-group select,.form-group textarea{background:var(--bg3);border:0.5px solid var(--border2);border-radius:10px;padding:12px 16px;color:var(--text);font-family:'DM Sans',sans-serif;font-size:14px;outline:none;transition:border-color 0.2s}
+.form-group input:focus,.form-group select:focus,.form-group textarea:focus{border-color:var(--accent)}
+.form-group select option{background:var(--bg3)}
+.form-group textarea{resize:vertical;min-height:80px}
+
+/* — Color picker row — */
+.color-row{display:flex;align-items:center;gap:12px}
+.color-swatch{width:44px;height:44px;border-radius:10px;border:0.5px solid var(--border2);cursor:pointer;overflow:hidden;position:relative;flex-shrink:0}
+.color-swatch input[type=color]{position:absolute;inset:-4px;width:calc(100%+8px);height:calc(100%+8px);border:none;cursor:pointer;opacity:0}
+.color-hex{background:var(--bg3);border:0.5px solid var(--border2);border-radius:10px;padding:12px 16px;color:var(--text);font-family:monospace;font-size:13px;flex:1;outline:none;transition:border-color 0.2s}
+.color-hex:focus{border-color:var(--accent)}
+
+/* — API key card — */
+.api-card{background:var(--bg2);border:0.5px solid var(--border);border-radius:16px;padding:24px;display:flex;gap:16px;align-items:flex-start;margin-bottom:24px}
+.api-icon{width:36px;height:36px;border-radius:10px;background:var(--accent-dim);border:0.5px solid rgba(212,240,74,0.2);display:flex;align-items:center;justify-content:center;flex-shrink:0;font-size:16px}
+.api-card h3{font-size:13px;font-weight:500;margin-bottom:4px}
+.api-card p{font-size:12px;color:var(--muted);margin-bottom:10px}
+.api-card input{width:100%;background:var(--bg3);border:0.5px solid var(--border2);border-radius:8px;padding:10px 14px;color:var(--text);font-family:monospace;font-size:12px;outline:none;transition:border-color 0.2s}
+.api-card input:focus{border-color:var(--accent)}
+.api-link{font-size:11px;color:var(--accent);text-decoration:none;display:inline-flex;align-items:center;gap:4px;margin-top:6px}
+.api-link:hover{text-decoration:underline}
+
+/* — Generate button — */
+.generate-btn{width:100%;padding:16px;background:var(--accent);color:#0a0a09;font-family:'Syne',sans-serif;font-weight:700;font-size:15px;letter-spacing:0.04em;border:none;border-radius:12px;cursor:pointer;transition:transform 0.2s,box-shadow 0.2s,opacity 0.2s;display:flex;align-items:center;justify-content:center;gap:10px}
+.generate-btn:hover{transform:translateY(-1px);box-shadow:0 8px 32px rgba(212,240,74,0.2)}
+.generate-btn:active{transform:scale(0.99)}
+.generate-btn:disabled{opacity:0.4;cursor:not-allowed;transform:none}
+
+/* — Loading — */
+.loading{display:none;flex-direction:column;align-items:center;justify-content:center;padding:60px;text-align:center}
+.loading.visible{display:flex}
+.spinner{width:40px;height:40px;border:2px solid var(--border2);border-top-color:var(--accent);border-radius:50%;animation:spin 0.8s linear infinite;margin-bottom:20px}
+.loading-text{font-size:13px;color:var(--muted)}
+.loading-step{font-size:12px;color:var(--accent);margin-top:6px;min-height:18px}
+
+/* — Results — */
+#results{display:none;padding:0 32px 80px;max-width:960px;margin:0 auto}
+#results.visible{display:block}
+.results-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:32px;flex-wrap:gap}
+.results-title{font-family:'Syne',sans-serif;font-size:28px;font-weight:700;letter-spacing:-0.02em}
+.results-brand{color:var(--accent)}
+.download-bar{display:flex;gap:10px;flex-wrap:wrap;margin-top:12px}
+.dl-btn{display:inline-flex;align-items:center;gap:8px;padding:9px 18px;border-radius:100px;font-size:12px;font-weight:500;cursor:pointer;border:0.5px solid var(--border2);background:var(--bg2);color:var(--text);transition:border-color 0.2s,background 0.2s}
+.dl-btn:hover{border-color:var(--accent);background:var(--accent-dim);color:var(--accent)}
+
+/* — Token cards — */
+.results-grid{display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-bottom:16px}
+.token-card{background:var(--bg2);border:0.5px solid var(--border);border-radius:16px;padding:24px}
+.token-card.full{grid-column:1/-1}
+.token-card h3{font-size:12px;font-weight:500;letter-spacing:0.08em;text-transform:uppercase;color:var(--muted);margin-bottom:16px}
+.palette-strip{display:flex;gap:6px;flex-wrap:wrap}
+.pal-swatch{display:flex;flex-direction:column;align-items:center;gap:4px}
+.pal-swatch .sw{width:36px;height:36px;border-radius:8px;cursor:pointer;transition:transform 0.15s;border:0.5px solid rgba(255,255,255,0.06)}
+.pal-swatch .sw:hover{transform:scale(1.1)}
+.pal-swatch span{font-size:9px;color:var(--muted);font-family:monospace}
+.sem-list{display:flex;flex-direction:column;gap:8px}
+.sem-item{display:flex;align-items:center;gap:10px;font-size:13px}
+.sem-dot{width:16px;height:16px;border-radius:4px;flex-shrink:0;border:0.5px solid rgba(255,255,255,0.06)}
+.sem-name{font-family:monospace;font-size:11px;color:var(--muted);flex:1}
+.sem-hex{font-family:monospace;font-size:11px;color:var(--text)}
+.type-list{display:flex;flex-direction:column;gap:6px}
+.type-row{display:flex;align-items:baseline;gap:12px;padding:6px 0;border-bottom:0.5px solid var(--border)}
+.type-row:last-child{border:none}
+.type-name{font-family:monospace;font-size:10px;color:var(--muted);width:80px;flex-shrink:0}
+.type-preview{flex:1;overflow:hidden;white-space:nowrap;text-overflow:ellipsis}
+.type-meta{font-size:10px;color:var(--muted);font-family:monospace;flex-shrink:0}
+.code-block{background:var(--bg3);border-radius:10px;padding:20px;font-family:monospace;font-size:11px;line-height:1.7;overflow-x:auto;white-space:pre;color:#b8f0a0;max-height:300px;overflow-y:auto}
+.tab-row{display:flex;gap:2px;margin-bottom:12px}
+.tab-btn{padding:6px 14px;font-size:12px;border-radius:100px;border:0.5px solid var(--border);background:none;color:var(--muted);cursor:pointer;transition:all 0.15s}
+.tab-btn.active{background:var(--accent-dim);border-color:rgba(212,240,74,0.3);color:var(--accent)}
+
+/* — Toast — */
+.toast{position:fixed;bottom:24px;left:50%;transform:translateX(-50%) translateY(80px);background:var(--accent);color:#0a0a09;padding:10px 20px;border-radius:100px;font-size:13px;font-weight:500;transition:transform 0.3s;z-index:999;pointer-events:none}
+.toast.show{transform:translateX(-50%) translateY(0)}
+
+/* — Animations — */
+@keyframes fadeUp{from{opacity:0;transform:translateY(16px)}to{opacity:1;transform:translateY(0)}}
+@keyframes spin{to{transform:rotate(360deg)}}
+
+/* — Responsive — */
+@media(max-width:600px){
+  .form-grid{grid-template-columns:1fr}
+  .form-group.full{grid-column:1}
+  .results-grid{grid-template-columns:1fr}
+  .token-card.full{grid-column:1}
+  nav{padding:16px 20px}
+  section{padding:60px 20px}
+  #results{padding:0 20px 60px}
+  .form-card{padding:24px 20px}
+}
+</style>
+</head>
+<body>
+
+<nav>
+  <div class="nav-logo">brand<span>kit</span></div>
+  <div class="nav-badge">AI-Powered · Free</div>
+</nav>
+
+<!-- Hero -->
+<div class="hero">
+  <div class="eyebrow">Design System Generator</div>
+  <h1>Your brand,<br><em>production-ready</em><br>in seconds.</h1>
+  <p class="hero-sub">Enter your brand details and get a complete design system — color tokens, typography, spacing, and a Figma-ready export.</p>
+  <button class="hero-cta" onclick="document.getElementById('form-section').scrollIntoView({behavior:'smooth'})">
+    Generate my brand kit
+    <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2"><path d="M8 3l5 5-5 5M3 8h10"/></svg>
+  </button>
+</div>
+
+<!-- Form -->
+<section id="form-section">
+  <div class="section-label">Step 1 of 1</div>
+  <div class="section-title">Tell us about your brand</div>
+  <p class="section-sub">Takes about 60 seconds. We'll handle the rest.</p>
+
+
+
+  <div class="form-card">
+    <div class="form-grid">
+      <div class="form-group">
+        <label>Brand / Company name</label>
+        <input type="text" id="brandName" placeholder="e.g. Acme Studio" value="">
+      </div>
+      <div class="form-group">
+        <label>Industry / Niche</label>
+        <select id="industry">
+          <option value="tech startup">Tech startup</option>
+          <option value="SaaS product">SaaS product</option>
+          <option value="creative agency">Creative agency</option>
+          <option value="e-commerce">E-commerce</option>
+          <option value="healthcare">Healthcare</option>
+          <option value="finance / fintech">Finance / Fintech</option>
+          <option value="education">Education</option>
+          <option value="food & hospitality">Food & Hospitality</option>
+          <option value="fashion / lifestyle">Fashion / Lifestyle</option>
+          <option value="non-profit">Non-profit</option>
+          <option value="other">Other</option>
+        </select>
+      </div>
+      <div class="form-group">
+        <label>Primary brand color</label>
+        <div class="color-row">
+          <div class="color-swatch" id="swatchBox" style="background:#534AB7">
+            <input type="color" id="colorPicker" value="#534AB7" oninput="syncColor('picker')">
+          </div>
+          <input class="color-hex" type="text" id="colorHex" value="#534AB7" maxlength="7" oninput="syncColor('hex')" placeholder="#534AB7">
+        </div>
+      </div>
+      <div class="form-group">
+        <label>Visual style</label>
+        <select id="brandStyle">
+          <option value="modern and minimal">Modern & minimal</option>
+          <option value="bold and energetic">Bold & energetic</option>
+          <option value="classic and refined">Classic & refined</option>
+          <option value="playful and friendly">Playful & friendly</option>
+          <option value="luxury and premium">Luxury & premium</option>
+          <option value="technical and precise">Technical & precise</option>
+        </select>
+      </div>
+      <div class="form-group">
+        <label>Brand personality (pick 2–3)</label>
+        <select id="personality">
+          <option value="trustworthy, professional, clear">Trustworthy · Professional · Clear</option>
+          <option value="innovative, bold, forward-thinking">Innovative · Bold · Forward-thinking</option>
+          <option value="warm, friendly, approachable">Warm · Friendly · Approachable</option>
+          <option value="sophisticated, refined, premium">Sophisticated · Refined · Premium</option>
+          <option value="playful, energetic, fun">Playful · Energetic · Fun</option>
+          <option value="minimal, focused, essential">Minimal · Focused · Essential</option>
+        </select>
+      </div>
+      <div class="form-group">
+        <label>Target audience</label>
+        <input type="text" id="audience" placeholder="e.g. founders, designers, developers">
+      </div>
+      <div class="form-group full">
+        <label>Brand description <span style="color:var(--muted);font-weight:300;text-transform:none">(optional — helps personalise results)</span></label>
+        <textarea id="brandDesc" placeholder="e.g. We build project management tools for remote teams. Think Notion meets Linear — clean, fast, no clutter."></textarea>
+      </div>
+      <div class="form-group full">
+        <label>Token export format</label>
+        <select id="exportFormat">
+          <option value="css">CSS Custom Properties</option>
+          <option value="json">JSON (for Style Dictionary)</option>
+          <option value="scss">SCSS Variables</option>
+        </select>
+      </div>
+    </div>
+  </div>
+
+  <button class="generate-btn" id="generateBtn" onclick="generate()">
+    <svg width="18" height="18" viewBox="0 0 18 18" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 2v14M2 9h14"/></svg>
+    Generate brand kit
+  </button>
+
+  <!-- Loading -->
+  <div class="loading" id="loading">
+    <div class="spinner"></div>
+    <div class="loading-text">Building your design system...</div>
+    <div class="loading-step" id="loadingStep">Analysing brand color</div>
+  </div>
+</section>
+
+<!-- Results -->
+<div id="results">
+  <div style="max-width:960px;margin:0 auto;padding:0 0 24px;display:flex;flex-direction:column;gap:12px">
+    <div class="section-label">Your brand kit is ready</div>
+    <div class="results-title">Design System — <span class="results-brand" id="resultBrandName"></span></div>
+    <div class="download-bar">
+      <button class="dl-btn" onclick="downloadTokens()">⬇ Download tokens</button>
+      <button class="dl-btn" onclick="downloadFigmaPlugin()">⬇ Figma plugin (.zip info)</button>
+      <button class="dl-btn" onclick="copyTokens()">Copy tokens</button>
+      <button class="dl-btn" onclick="resetForm()">Generate another</button>
+    </div>
+  </div>
+
+  <div class="results-grid">
+    <!-- Palette -->
+    <div class="token-card">
+      <h3>Color palette</h3>
+      <div class="palette-strip" id="paletteStrip"></div>
+    </div>
+
+    <!-- Semantic -->
+    <div class="token-card">
+      <h3>Semantic tokens</h3>
+      <div class="sem-list" id="semList"></div>
+    </div>
+
+    <!-- Typography -->
+    <div class="token-card">
+      <h3>Typography scale</h3>
+      <div class="type-list" id="typeList"></div>
+    </div>
+
+    <!-- Spacing -->
+    <div class="token-card">
+      <h3>Spacing grid (8pt)</h3>
+      <div id="spacingList" style="display:flex;flex-direction:column;gap:6px"></div>
+    </div>
+
+    <!-- Code export -->
+    <div class="token-card full">
+      <h3>Token export</h3>
+      <div class="tab-row" id="exportTabs">
+        <button class="tab-btn active" onclick="switchTab('css')">CSS</button>
+        <button class="tab-btn" onclick="switchTab('json')">JSON</button>
+        <button class="tab-btn" onclick="switchTab('scss')">SCSS</button>
+      </div>
+      <div class="code-block" id="codeOutput"></div>
+    </div>
+  </div>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<script>
+// ── State ─────────────────────────────────────────────────────────────────────
+let generatedData = null;
+
+// ── Color sync ────────────────────────────────────────────────────────────────
+function syncColor(source) {
+  const picker = document.getElementById('colorPicker');
+  const hexInput = document.getElementById('colorHex');
+  const swatch = document.getElementById('swatchBox');
+  if (source === 'picker') {
+    hexInput.value = picker.value;
+  } else {
+    const v = hexInput.value;
+    if (/^#[0-9a-fA-F]{6}$/.test(v)) {
+      picker.value = v;
+    }
+  }
+  swatch.style.background = picker.value;
+}
+
+// ── Toast ─────────────────────────────────────────────────────────────────────
+function showToast(msg) {
+  const t = document.getElementById('toast');
+  t.textContent = msg;
+  t.classList.add('show');
+  setTimeout(() => t.classList.remove('show'), 2200);
+}
+
+// ── Loading steps ─────────────────────────────────────────────────────────────
+const steps = ['Analysing brand color…','Generating palette…','Building typography scale…','Crafting spacing system…','Writing token exports…','Finishing up…'];
+let stepIdx = 0, stepTimer;
+function startSteps() {
+  stepIdx = 0;
+  document.getElementById('loadingStep').textContent = steps[0];
+  stepTimer = setInterval(() => {
+    stepIdx = (stepIdx + 1) % steps.length;
+    document.getElementById('loadingStep').textContent = steps[stepIdx];
+  }, 1800);
+}
+function stopSteps() { clearInterval(stepTimer); }
+
+// ── Color helpers ─────────────────────────────────────────────────────────────
+function hexToHsl(hex) {
+  let r = parseInt(hex.slice(1,3),16)/255, g = parseInt(hex.slice(3,5),16)/255, b = parseInt(hex.slice(5,7),16)/255;
+  let max = Math.max(r,g,b), min = Math.min(r,g,b), l = (max+min)/2, s=0, h=0;
+  if (max !== min) {
+    const d = max - min;
+    s = l > 0.5 ? d/(2-max-min) : d/(max+min);
+    switch(max) {
+      case r: h = (g-b)/d + (g<b?6:0); break;
+      case g: h = (b-r)/d + 2; break;
+      case b: h = (r-g)/d + 4; break;
+    }
+    h /= 6;
+  }
+  return [h*360, s*100, l*100];
+}
+
+function hslToHex(h, s, l) {
+  s /= 100; l /= 100;
+  const a = s * Math.min(l, 1-l);
+  const f = n => { const k = (n+h/30)%12; const c = l-a*Math.max(Math.min(k-3,9-k,1),-1); return Math.round(255*c).toString(16).padStart(2,'0'); };
+  return `#${f(0)}${f(8)}${f(4)}`;
+}
+
+function generatePalette(brandHex) {
+  const [h, s] = hexToHsl(brandHex);
+  const lightnesses = [96,90,82,72,60,46,34,24,14];
+  const stops = [50,100,200,300,400,500,600,700,800];
+  return stops.map((stop, i) => ({ stop, hex: hslToHex(h, Math.min(s*0.9, 78), lightnesses[i]) }));
+}
+
+// ── Build CSS ─────────────────────────────────────────────────────────────────
+function buildCss(data) {
+  const pal = generatePalette(data.brandHex);
+  const [h, s, l] = hexToHsl(data.brandHex);
+  const hover = hslToHex(h, s, Math.max(l-10, 8));
+  const light = hslToHex(h, Math.min(s, 55), 94);
+
+  let css = `/* ================================================\n   ${data.brandName} — Design System Tokens\n   Generated by BrandKit · AI Workflow Specialist\n   ================================================ */\n\n:root {\n\n  /* Brand color ramp */\n`;
+  pal.forEach(p => css += `  --color-brand-${p.stop}: ${p.hex};\n`);
+  css += `\n  /* Semantic colors */\n`;
+  css += `  --color-primary:        ${data.brandHex};\n`;
+  css += `  --color-primary-hover:  ${hover};\n`;
+  css += `  --color-primary-light:  ${light};\n`;
+  css += `  --color-success:        #3B6D11;\n`;
+  css += `  --color-warning:        #854F0B;\n`;
+  css += `  --color-danger:         #A32D2D;\n`;
+  css += `  --color-info:           #185FA5;\n`;
+  css += `\n  /* Neutrals */\n`;
+  css += `  --color-text-primary:   #111111;\n`;
+  css += `  --color-text-secondary: #666666;\n`;
+  css += `  --color-text-muted:     #999999;\n`;
+  css += `  --color-surface:        #FFFFFF;\n`;
+  css += `  --color-surface-2:      #F6F6F4;\n`;
+  css += `  --color-border:         #E0DFDB;\n`;
+  css += `\n  /* Typography */\n`;
+  css += `  --font-display: ${data.fonts?.display || 'Playfair Display, Georgia, serif'};\n`;
+  css += `  --font-body:    ${data.fonts?.body || 'DM Sans, system-ui, sans-serif'};\n`;
+  css += `  --font-mono:    'JetBrains Mono', 'Courier New', monospace;\n`;
+  css += `\n  /* Type scale */\n`;
+  css += `  --text-display:  3rem;     /* 48px */\n`;
+  css += `  --text-h1:       2.25rem;  /* 36px */\n`;
+  css += `  --text-h2:       1.75rem;  /* 28px */\n`;
+  css += `  --text-h3:       1.375rem; /* 22px */\n`;
+  css += `  --text-h4:       1.125rem; /* 18px */\n`;
+  css += `  --text-body-lg:  1.0625rem;/* 17px */\n`;
+  css += `  --text-body:     0.9375rem;/* 15px */\n`;
+  css += `  --text-small:    0.8125rem;/* 13px */\n`;
+  css += `  --text-caption:  0.6875rem;/* 11px */\n`;
+  css += `\n  /* 8pt spacing grid */\n`;
+  [2,4,6,8,12,16,20,24,32,40,48,64].forEach(v => css += `  --space-${v}: ${v}px;\n`);
+  css += `\n  /* Border radius */\n`;
+  css += `  --radius-sm:   4px;\n  --radius-md:   8px;\n  --radius-lg:  12px;\n  --radius-xl:  16px;\n  --radius-full: 9999px;\n`;
+  css += `\n  /* Shadows */\n`;
+  css += `  --shadow-sm: 0 1px 3px rgba(0,0,0,0.06);\n  --shadow-md: 0 4px 12px rgba(0,0,0,0.08);\n  --shadow-lg: 0 12px 32px rgba(0,0,0,0.10);\n`;
+  css += `\n  /* Transitions */\n`;
+  css += `  --transition-fast:   120ms ease;\n  --transition-normal: 200ms ease;\n  --transition-slow:   350ms ease;\n`;
+  css += `\n}`;
+  return css;
+}
+
+function buildJson(data) {
+  const pal = generatePalette(data.brandHex);
+  const [h,s,l] = hexToHsl(data.brandHex);
+  const obj = {
+    color: {
+      brand: Object.fromEntries(pal.map(p => [p.stop, p.hex])),
+      semantic: {
+        primary: data.brandHex,
+        "primary-hover": hslToHex(h,s,Math.max(l-10,8)),
+        "primary-light": hslToHex(h,Math.min(s,55),94),
+        success: "#3B6D11", warning: "#854F0B", danger: "#A32D2D", info: "#185FA5"
+      },
+      neutral: { "text-primary":"#111111","text-secondary":"#666666","surface":"#FFFFFF","border":"#E0DFDB" }
+    },
+    typography: {
+      family: { display: data.fonts?.display||'Playfair Display, Georgia, serif', body: data.fonts?.body||'DM Sans, system-ui, sans-serif', mono: 'JetBrains Mono, monospace' },
+      size: { display:"48px",h1:"36px",h2:"28px",h3:"22px",h4:"18px","body-lg":"17px",body:"15px",small:"13px",caption:"11px" }
+    },
+    spacing: Object.fromEntries([2,4,6,8,12,16,20,24,32,40,48,64].map(v=>[v,`${v}px`])),
+    radius: { sm:"4px", md:"8px", lg:"12px", xl:"16px", full:"9999px" },
+    shadow: { sm:"0 1px 3px rgba(0,0,0,0.06)", md:"0 4px 12px rgba(0,0,0,0.08)", lg:"0 12px 32px rgba(0,0,0,0.10)" }
+  };
+  return JSON.stringify(obj, null, 2);
+}
+
+function buildScss(data) {
+  const pal = generatePalette(data.brandHex);
+  const [h,s,l] = hexToHsl(data.brandHex);
+  let scss = `// ================================================\n// ${data.brandName} — Design System Tokens\n// ================================================\n\n// Brand palette\n$color-brand: (\n`;
+  pal.forEach(p => scss += `  ${p.stop}: ${p.hex},\n`);
+  scss = scss.slice(0,-2) + `\n);\n\n`;
+  scss += `// Semantic\n$color-primary:       ${data.brandHex};\n$color-primary-hover: ${hslToHex(h,s,Math.max(l-10,8))};\n$color-primary-light: ${hslToHex(h,Math.min(s,55),94)};\n$color-success: #3B6D11;\n$color-warning: #854F0B;\n$color-danger:  #A32D2D;\n$color-info:    #185FA5;\n\n`;
+  scss += `// Typography\n$font-display: '${(data.fonts?.display||'Playfair Display').split(',')[0].replace(/'/g,'')}', serif;\n$font-body:    '${(data.fonts?.body||'DM Sans').split(',')[0].replace(/'/g,'')}', sans-serif;\n$font-mono:    'JetBrains Mono', monospace;\n\n`;
+  scss += `// Radius\n$radius-sm: 4px;\n$radius-md: 8px;\n$radius-lg: 12px;\n$radius-xl: 16px;\n\n`;
+  scss += `// Spacing\n`;
+  [2,4,6,8,12,16,20,24,32,40,48,64].forEach(v => scss += `$space-${v}: ${v}px;\n`);
+  return scss;
+}
+
+// ── Render results ─────────────────────────────────────────────────────────────
+function renderResults(data) {
+  document.getElementById('resultBrandName').textContent = data.brandName;
+
+  // Palette
+  const pal = generatePalette(data.brandHex);
+  const strip = document.getElementById('paletteStrip');
+  strip.innerHTML = '';
+  pal.forEach(p => {
+    strip.innerHTML += `<div class="pal-swatch"><div class="sw" style="background:${p.hex}" onclick="navigator.clipboard&&navigator.clipboard.writeText('${p.hex}')&&showToast('Copied ${p.hex}')" title="Click to copy ${p.hex}"></div><span>${p.stop}</span></div>`;
+  });
+
+  // Semantic
+  const [h,s,l] = hexToHsl(data.brandHex);
+  const semTokens = [
+    ['primary', data.brandHex],
+    ['primary-hover', hslToHex(h,s,Math.max(l-10,8))],
+    ['primary-light', hslToHex(h,Math.min(s,55),94)],
+    ['success', '#3B6D11'],
+    ['warning', '#854F0B'],
+    ['danger', '#A32D2D'],
+  ];
+  const semList = document.getElementById('semList');
+  semList.innerHTML = semTokens.map(([name,hex]) =>
+    `<div class="sem-item"><div class="sem-dot" style="background:${hex}"></div><div class="sem-name">--color-${name}</div><div class="sem-hex">${hex}</div></div>`
+  ).join('');
+
+  // Typography
+  const typeScale = [
+    ['display','48px','700'],['h1','36px','700'],['h2','28px','600'],
+    ['h3','22px','600'],['h4','18px','500'],['body','15px','400'],['small','13px','400']
+  ];
+  const typeList = document.getElementById('typeList');
+  typeList.innerHTML = typeScale.map(([name,size,weight]) => {
+    const px = parseInt(size);
+    const previewSize = Math.min(px * 0.45, 22);
+    return `<div class="type-row"><div class="type-name">--text-${name}</div><div class="type-preview" style="font-size:${previewSize}px;font-weight:${weight};line-height:1.2">${name.charAt(0).toUpperCase()+name.slice(1)}</div><div class="type-meta">${size} / ${weight}</div></div>`;
+  }).join('');
+
+  // Spacing
+  const spList = document.getElementById('spacingList');
+  spList.innerHTML = [2,4,6,8,12,16,20,24,32,40,48,64].map(v =>
+    `<div style="display:flex;align-items:center;gap:10px;font-size:11px"><span style="font-family:monospace;color:var(--muted);width:64px;flex-shrink:0">--space-${v}</span><div style="height:6px;border-radius:3px;background:var(--accent);opacity:0.6;width:${Math.min(v*2.2,200)}px"></div><span style="font-family:monospace;color:var(--muted)">${v}px</span></div>`
+  ).join('');
+
+  // Code
+  generatedData = data;
+  switchTab('css');
+
+  document.getElementById('results').classList.add('visible');
+  setTimeout(() => document.getElementById('results').scrollIntoView({ behavior: 'smooth' }), 100);
+}
+
+function switchTab(fmt) {
+  document.querySelectorAll('.tab-btn').forEach(b => b.classList.toggle('active', b.textContent.toLowerCase() === fmt));
+  const output = fmt === 'css' ? buildCss(generatedData) : fmt === 'json' ? buildJson(generatedData) : buildScss(generatedData);
+  document.getElementById('codeOutput').textContent = output;
+}
+
+// ── Font pairing lookup (no API needed) ──────────────────────────────────────
+const FONT_PAIRINGS = {
+  'modern and minimal': {
+    display: 'Syne, system-ui, sans-serif',
+    body: 'DM Sans, system-ui, sans-serif'
+  },
+  'bold and energetic': {
+    display: '"Barlow Condensed", Impact, sans-serif',
+    body: '"Barlow", system-ui, sans-serif'
+  },
+  'classic and refined': {
+    display: '"Playfair Display", Georgia, serif',
+    body: '"Libre Baskerville", Georgia, serif'
+  },
+  'playful and friendly': {
+    display: '"Nunito", "Varela Round", sans-serif',
+    body: '"Nunito", system-ui, sans-serif'
+  },
+  'luxury and premium': {
+    display: '"Cormorant Garamond", "Didot", serif',
+    body: '"Jost", system-ui, sans-serif'
+  },
+  'technical and precise': {
+    display: '"IBM Plex Sans", system-ui, sans-serif',
+    body: '"IBM Plex Sans", system-ui, sans-serif'
+  },
+};
+
+// ── Generate (zero API — all local) ──────────────────────────────────────────
+async function generate() {
+  const brandName = document.getElementById('brandName').value.trim() || 'My Brand';
+  const brandHex  = document.getElementById('colorHex').value.trim() || '#534AB7';
+  const style     = document.getElementById('brandStyle').value;
+  const industry  = document.getElementById('industry').value;
+  const personality = document.getElementById('personality').value;
+
+  if (!/^#[0-9a-fA-F]{6}$/.test(brandHex)) {
+    showToast('Enter a valid hex color like #534AB7'); return;
+  }
+
+  document.getElementById('generateBtn').disabled = true;
+  document.getElementById('loading').classList.add('visible');
+  document.getElementById('results').classList.remove('visible');
+  startSteps();
+
+  // Simulate a short generation delay so it feels satisfying
+  await new Promise(r => setTimeout(r, 2800));
+
+  const fonts = FONT_PAIRINGS[style] || FONT_PAIRINGS['modern and minimal'];
+
+  stopSteps();
+  document.getElementById('loading').classList.remove('visible');
+  document.getElementById('generateBtn').disabled = false;
+
+  renderResults({ brandName, brandHex, industry, style, personality, fonts });
+}
+
+// ── Downloads ─────────────────────────────────────────────────────────────────
+function downloadTokens() {
+  if (!generatedData) return;
+  const fmt = document.querySelector('.tab-btn.active').textContent.toLowerCase();
+  const content = fmt === 'css' ? buildCss(generatedData) : fmt === 'json' ? buildJson(generatedData) : buildScss(generatedData);
+  const ext = fmt === 'json' ? 'json' : fmt === 'scss' ? 'scss' : 'css';
+  const blob = new Blob([content], { type: 'text/plain' });
+  const a = document.createElement('a');
+  a.href = URL.createObjectURL(blob);
+  a.download = `${generatedData.brandName.toLowerCase().replace(/\s+/g,'-')}-tokens.${ext}`;
+  a.click();
+  showToast('Tokens downloaded');
+}
+
+function copyTokens() {
+  if (!generatedData) return;
+  const fmt = document.querySelector('.tab-btn.active').textContent.toLowerCase();
+  const content = fmt === 'css' ? buildCss(generatedData) : fmt === 'json' ? buildJson(generatedData) : buildScss(generatedData);
+  navigator.clipboard.writeText(content);
+  showToast('Copied to clipboard');
+}
+
+function downloadFigmaPlugin() {
+  const info = `FIGMA PLUGIN SETUP\n==================\n\nTo import your tokens into Figma:\n\n1. Download the Figma Token Importer plugin (ask your designer for the .zip)\n2. In Figma Desktop → Plugins → Development → Import plugin from manifest\n3. Select manifest.json from the plugin folder\n4. Run the plugin → paste your JSON tokens → click Import\n\nYour tokens will appear in Figma's Local Variables panel.\n\nJSON Token file is included in your brand kit download.`;
+  const blob = new Blob([info], { type: 'text/plain' });
+  const a = document.createElement('a');
+  a.href = URL.createObjectURL(blob);
+  a.download = 'figma-plugin-setup.txt';
+  a.click();
+  showToast('Figma setup guide downloaded');
+}
+
+function resetForm() {
+  document.getElementById('results').classList.remove('visible');
+  document.getElementById('form-section').scrollIntoView({ behavior: 'smooth' });
+}
+</script>
+</body>
+</html>
